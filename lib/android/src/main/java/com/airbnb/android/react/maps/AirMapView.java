@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.location.Location;
 
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -71,6 +72,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     private boolean handlePanDrag = false;
     private boolean moveOnMarkerPress = true;
     private boolean cacheEnabled = false;
+    private boolean followUser = true;
 
     private static final String[] PERMISSIONS = new String[] {
             "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"};
@@ -377,7 +379,27 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
             boundsToMove = null;
         }
+        LatLng latAndLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        CameraPosition.Builder camBuilder = CameraPosition.builder();
+        camBuilder.tilt(90);
+        camBuilder.target(latAndLng);
+        camBuilder.zoom(20);
+
+        CameraPosition cp = camBuilder.build();
+
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
+
+     map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+         @Override
+         public boolean onMyLocationButtonClick()
+         {
+             //TODO: Any custom actions
+             followUser = true;
+             return false;
+         }
+     });
 
     public void setShowsUserLocation(boolean showUserLocation) {
         this.showUserLocation = showUserLocation; // hold onto this for lifecycle handling
@@ -845,6 +867,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
     public void onPanDrag(MotionEvent ev) {
         Point point = new Point((int) ev.getX(), (int) ev.getY());
+        followUser = false;
         LatLng coords = this.map.getProjection().fromScreenLocation(point);
         WritableMap event = makeClickEventData(coords);
         manager.pushEvent(context, this, "onPanDrag", event);
