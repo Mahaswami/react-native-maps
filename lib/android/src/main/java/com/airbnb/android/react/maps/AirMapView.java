@@ -214,6 +214,30 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             }
         });
 
+        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+              @Override
+              public void onMyLocationChange(Location location){
+                if(followUser){
+                    LatLng latAndLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+                          .target(latAndLng)
+                          .build();
+                        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+              }
+         });
+
+         map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+             @Override
+             public boolean onMyLocationButtonClick()
+             {
+                 //TODO: Any custom actions
+                 followUser = true;
+                 return false;
+             }
+         });
+
         map.setOnPolygonClickListener(new GoogleMap.OnPolygonClickListener() {
             @Override
             public void onPolygonClick(Polygon polygon) {
@@ -390,16 +414,6 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
         map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
     }
-
-     map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
-         @Override
-         public boolean onMyLocationButtonClick()
-         {
-             //TODO: Any custom actions
-             followUser = true;
-             return false;
-         }
-     });
 
     public void setShowsUserLocation(boolean showUserLocation) {
         this.showUserLocation = showUserLocation; // hold onto this for lifecycle handling
