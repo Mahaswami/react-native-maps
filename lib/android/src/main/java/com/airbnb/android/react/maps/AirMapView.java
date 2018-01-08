@@ -403,7 +403,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
             boundsToMove = null;
         }
-        LatLng latAndLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latAndLng = new LatLng(lat, lng);
 
         CameraPosition.Builder camBuilder = CameraPosition.builder();
         camBuilder.tilt(90);
