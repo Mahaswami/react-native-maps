@@ -406,9 +406,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         LatLng latAndLng = new LatLng(lat, lng);
 
         CameraPosition.Builder camBuilder = CameraPosition.builder();
-        camBuilder.tilt(90);
+        camBuilder.tilt(80);
         camBuilder.target(latAndLng);
-        camBuilder.zoom(20);
+        camBuilder.zoom(18);
 
         CameraPosition cp = camBuilder.build();
 
