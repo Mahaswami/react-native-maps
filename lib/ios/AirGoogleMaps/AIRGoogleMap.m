@@ -300,6 +300,15 @@ id regionAsJSON(MKCoordinateRegion region) {
   return self.settings.myLocationButton;
 }
 
+- (void)setShow3Dview:(BOOL)show3Dview {
+  if((int)show3Dview){
+    [self animateToViewingAngle:80.0];
+  }
+  else{
+    [self animateToViewingAngle:0.0];
+  }
+}
+
 
 + (MKCoordinateRegion) makeGMSCameraPositionFromMap:(GMSMapView *)map andGMSCameraPosition:(GMSCameraPosition *)position {
   // solution from here: http://stackoverflow.com/a/16587735/1102215
