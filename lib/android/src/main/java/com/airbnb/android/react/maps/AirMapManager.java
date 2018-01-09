@@ -134,6 +134,11 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
         view.map.getUiSettings().setCompassEnabled(showsCompass);
     }
 
+    @ReactProp(name = "show3Dview", defaultBoolean = true)
+    public void setMy3Dview(AirMapView view, boolean show3Dview) {
+        view.setMy3Dview(show3Dview);
+    }
+
     @ReactProp(name = "scrollEnabled", defaultBoolean = false)
     public void setScrollEnabled(AirMapView view, boolean scrollEnabled) {
         view.map.getUiSettings().setScrollGesturesEnabled(scrollEnabled);

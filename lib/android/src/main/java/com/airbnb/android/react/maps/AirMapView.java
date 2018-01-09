@@ -217,14 +217,14 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
               @Override
               public void onMyLocationChange(Location location){
-                if(followUser){
+                /*if(followUser){
                     LatLng latAndLng = new LatLng(location.getLatitude(), location.getLongitude());
 
                     CameraPosition cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
                           .target(latAndLng)
                           .build();
                         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                }
+                }*/
               }
          });
 
@@ -422,6 +422,22 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             map.setMyLocationEnabled(showUserLocation);
         }
     }
+
+    public void setMy3Dview(boolean show3Dview) {
+        CameraPosition cameraPosition;
+        if(show3Dview){
+           cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+             .tilt(80)
+             .build();
+        }
+        else {
+           cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+             .tilt(0)
+             .build();
+        }
+         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
 
     public void setShowsMyLocationButton(boolean showMyLocationButton) {
         if (hasPermissions()) {
@@ -881,7 +897,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
     public void onPanDrag(MotionEvent ev) {
         Point point = new Point((int) ev.getX(), (int) ev.getY());
-        followUser = false;
+       // followUser = false;
         LatLng coords = this.map.getProjection().fromScreenLocation(point);
         WritableMap event = makeClickEventData(coords);
         manager.pushEvent(context, this, "onPanDrag", event);
