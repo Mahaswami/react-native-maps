@@ -35,6 +35,7 @@ id regionAsJSON(MKCoordinateRegion region) {
 {
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _initialRegionSet;
+  GMSCameraUpdate *myCurrentLocation;
 }
 
 - (instancetype)init
@@ -320,6 +321,12 @@ id regionAsJSON(MKCoordinateRegion region) {
   }
 }
 
+- (void)setShowsMyCustomLocationButton:(BOOL)showsMyCustomLocationButton{
+  if(myCurrentLocation){
+    [self animateWithCameraUpdate:myCurrentLocation];
+  }
+}
+
 
 + (MKCoordinateRegion) makeGMSCameraPositionFromMap:(GMSMapView *)map andGMSCameraPosition:(GMSCameraPosition *)position {
   // solution from here: http://stackoverflow.com/a/16587735/1102215
@@ -371,8 +378,8 @@ id regionAsJSON(MKCoordinateRegion region) {
                     }
                 };
     CLLocationCoordinate2D target = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
-    GMSCameraUpdate *update  = [GMSCameraUpdate setTarget:target];
-    [self animateWithCameraUpdate: update];
+    myCurrentLocation = [GMSCameraUpdate setTarget:target];
+    //[self animateWithCameraUpdate: myCurrentLocation];
 
   if (self.onMyLocationChange) self.onMyLocationChange(event);
   } else {
