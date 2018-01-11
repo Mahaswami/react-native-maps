@@ -73,6 +73,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     private boolean moveOnMarkerPress = true;
     private boolean cacheEnabled = false;
     private boolean followUser = true;
+    private LatLng myCurrentLocation;
 
     private static final String[] PERMISSIONS = new String[] {
             "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"};
@@ -216,12 +217,11 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
         map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
               @Override
+              myCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
               public void onMyLocationChange(Location location){
                 /*if(followUser){
-                    LatLng latAndLng = new LatLng(location.getLatitude(), location.getLongitude());
-
                     CameraPosition cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
-                          .target(latAndLng)
+                          .target(myCurrentLocation)
                           .build();
                         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }*/
@@ -436,6 +436,17 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
              .build();
         }
          map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    public void setShowsMyCustomLocationButton(boolean showsMyCustomLocationButton) {
+        followUser = true;
+        if(myCurrentLocation != null) {
+            CameraPosition cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+                 .target(myCurrentLocation)
+                 .build();
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+
     }
 
 
