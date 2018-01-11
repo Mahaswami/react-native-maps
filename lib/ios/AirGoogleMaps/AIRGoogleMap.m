@@ -379,7 +379,7 @@ id regionAsJSON(MKCoordinateRegion region) {
                 };
     CLLocationCoordinate2D target = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
     myCurrentLocation = [GMSCameraUpdate setTarget:target];
-    [self animateWithCameraUpdate: myCurrentLocation];
+   // [self animateWithCameraUpdate: myCurrentLocation];
 
   if (self.onMyLocationChange) self.onMyLocationChange(event);
   } else {
