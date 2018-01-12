@@ -36,6 +36,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _initialRegionSet;
   GMSCameraUpdate *myCurrentLocation;
+  BOOL trackUser;
 }
 
 - (instancetype)init
@@ -48,10 +49,14 @@ id regionAsJSON(MKCoordinateRegion region) {
     _circles = [NSMutableArray array];
     _tiles = [NSMutableArray array];
     _initialRegionSet = false;
+     trackUser = YES;
      [self addObserver:self
                forKeyPath:@"myLocation"
                   options:NSKeyValueObservingOptionNew
                   context:NULL];
+     self.userInteractionEnabled = YES;
+     UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+     self.gestureRecognizers = @[panRecognizer];
   }
   return self;
 }
@@ -323,8 +328,13 @@ id regionAsJSON(MKCoordinateRegion region) {
 
 - (void)setShowsMyCustomLocationButton:(BOOL)showsMyCustomLocationButton{
   if(myCurrentLocation){
+    trackUser = YES;
     [self animateWithCameraUpdate:myCurrentLocation];
   }
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)uigr {
+   trackUser = NO;
 }
 
 
@@ -379,7 +389,9 @@ id regionAsJSON(MKCoordinateRegion region) {
                 };
     CLLocationCoordinate2D target = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude);
     myCurrentLocation = [GMSCameraUpdate setTarget:target];
-    [self animateWithCameraUpdate: myCurrentLocation];
+    if(trackUser) {
+        [self animateWithCameraUpdate: myCurrentLocation];
+    }
 
   if (self.onMyLocationChange) self.onMyLocationChange(event);
   } else {
