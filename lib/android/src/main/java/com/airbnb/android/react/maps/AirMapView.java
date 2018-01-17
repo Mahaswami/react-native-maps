@@ -219,12 +219,12 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
               @Override
               public void onMyLocationChange(Location location){
                  myCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                /*if(followUser){
+                 if(followUser){
                     CameraPosition cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
                           .target(myCurrentLocation)
                           .build();
                         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                }*/
+                }
               }
          });
 
@@ -908,7 +908,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
     public void onPanDrag(MotionEvent ev) {
         Point point = new Point((int) ev.getX(), (int) ev.getY());
-       // followUser = false;
+        followUser = false;
         LatLng coords = this.map.getProjection().fromScreenLocation(point);
         WritableMap event = makeClickEventData(coords);
         manager.pushEvent(context, this, "onPanDrag", event);
