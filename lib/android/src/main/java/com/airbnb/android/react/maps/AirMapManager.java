@@ -139,11 +139,6 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
         view.setMy3Dview(show3Dview);
     }
 
-    @ReactProp(name = "showsMyCustomLocationButton", defaultBoolean = true)
-    public void setShowsMyCustomLocationButton(AirMapView view, boolean showsMyCustomLocationButton) {
-        view.setShowsMyCustomLocationButton(showsMyCustomLocationButton);
-    }
-
     @ReactProp(name = "scrollEnabled", defaultBoolean = false)
     public void setScrollEnabled(AirMapView view, boolean scrollEnabled) {
         view.map.getUiSettings().setScrollGesturesEnabled(scrollEnabled);

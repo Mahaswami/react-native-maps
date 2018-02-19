@@ -426,17 +426,6 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
          map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    public void setShowsMyCustomLocationButton(boolean showsMyCustomLocationButton) {
-        followUser = true;
-        if(myCurrentLocation != null) {
-            CameraPosition cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
-                 .target(myCurrentLocation)
-                 .build();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-
-    }
-
 
     public void setShowsMyLocationButton(boolean showMyLocationButton) {
         if (hasPermissions()) {
