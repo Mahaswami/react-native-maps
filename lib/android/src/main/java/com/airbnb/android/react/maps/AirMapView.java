@@ -366,7 +366,6 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
   public void setInitialRegion(ReadableMap initialRegion) {
     if (!initialRegionSet && initialRegion != null) {
       setRegion(initialRegion);
-      initialRegionSet = true;
     }
   }
 
@@ -392,6 +391,20 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
       map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
       boundsToMove = null;
     }
+
+     if( initialRegionSet = false) {;
+          LatLng latAndLng = new LatLng(lat, lng);
+
+                CameraPosition.Builder camBuilder = CameraPosition.builder();
+                camBuilder.tilt(80);
+                camBuilder.target(latAndLng);
+                camBuilder.zoom(18);
+
+                CameraPosition cp = camBuilder.build();
+
+                map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+                initialRegionSet = true;
+          }
   }
 
   public void setShowsUserLocation(boolean showUserLocation) {
