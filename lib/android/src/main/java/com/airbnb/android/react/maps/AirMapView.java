@@ -216,15 +216,6 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
       }
     });
 
-     map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
-         @Override
-         public boolean onMyLocationButtonClick()
-         {
-             //TODO: Any custom actions
-             followUser = true;
-             return false;
-         }
-     });
 
     map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
       @Override
