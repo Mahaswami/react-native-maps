@@ -134,6 +134,11 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
     view.setShowsMyLocationButton(showMyLocationButton);
   }
 
+  @ReactProp(name = "show3Dview", defaultBoolean = true)
+  public void setMy3Dview(AirMapView view, boolean show3Dview) {
+    view.setMy3Dview(show3Dview);
+  }
+
   @ReactProp(name = "toolbarEnabled", defaultBoolean = true)
   public void setToolbarEnabled(AirMapView view, boolean toolbarEnabled) {
     view.setToolbarEnabled(toolbarEnabled);

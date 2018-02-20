@@ -319,6 +319,15 @@ id regionAsJSON(MKCoordinateRegion region) {
   [self setMinZoom:self.minZoom maxZoom:maxZoomLevel ];
 }
 
+- (void)setShow3Dview:(BOOL)show3Dview {
+  if((int)show3Dview){
+    [self animateToViewingAngle:80.0];
+  }
+  else{
+    [self animateToViewingAngle:0.0];
+  }
+}
+
 - (void)setShowsIndoorLevelPicker:(BOOL)showsIndoorLevelPicker {
   self.settings.indoorPicker = showsIndoorLevelPicker;
 }

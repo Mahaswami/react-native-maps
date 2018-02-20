@@ -9,4 +9,6 @@
 
 @interface AIRGoogleMapManager : RCTViewManager
 
+@property (nonatomic) BOOL show3Dview;
+
 @end

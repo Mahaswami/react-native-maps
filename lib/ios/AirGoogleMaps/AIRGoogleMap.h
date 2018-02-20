@@ -42,6 +42,7 @@
 @property (nonatomic, assign) BOOL showsUserLocation;
 @property (nonatomic, assign) BOOL showsMyLocationButton;
 @property (nonatomic, assign) BOOL showsIndoorLevelPicker;
+@property (nonatomic, assign) BOOL show3Dview;
 
 - (void)didPrepareMap;
 - (BOOL)didTapMarker:(GMSMarker *)marker;

@@ -216,6 +216,16 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
       }
     });
 
+     map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+         @Override
+         public boolean onMyLocationButtonClick()
+         {
+             //TODO: Any custom actions
+             followUser = true;
+             return false;
+         }
+     });
+
     map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
       @Override
       public void onInfoWindowClick(Marker marker) {
@@ -405,6 +415,21 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     if (hasPermissions()) {
       map.getUiSettings().setMyLocationButtonEnabled(showMyLocationButton);
     }
+  }
+
+  public void setMy3Dview(boolean show3Dview) {
+      CameraPosition cameraPosition;
+      if(show3Dview){
+         cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+           .tilt(80)
+           .build();
+      }
+      else {
+         cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+           .tilt(0)
+           .build();
+      }
+       map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
   }
 
   public void setToolbarEnabled(boolean toolbarEnabled) {
