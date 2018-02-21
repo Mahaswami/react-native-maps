@@ -41,6 +41,7 @@ RCT_EXPORT_MODULE()
 - (UIView *)view
 {
   AIRGoogleMap *map = [AIRGoogleMap new];
+  self.show3Dview = YES;
   map.delegate = self;
   return map;
 }
@@ -55,6 +56,7 @@ RCT_EXPORT_VIEW_PROPERTY(zoomEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(rotateEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(scrollEnabled, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(pitchEnabled, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(show3Dview, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsUserLocation, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showsMyLocationButton, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(customMapStyleString, NSString)
@@ -226,6 +228,11 @@ RCT_EXPORT_METHOD(takeSnapshot:(nonnull NSNumber *)reactTag
 - (void)mapView:(GMSMapView *)mapView idleAtCameraPosition:(GMSCameraPosition *)position {
   AIRGoogleMap *googleMapView = (AIRGoogleMap *)mapView;
   [googleMapView idleAtCameraPosition:position];
+    if(self.show3Dview){
+      self.show3Dview = NO;
+      [googleMapView animateToZoom:18.0];
+      [googleMapView animateToViewingAngle: 80.0];
+  }
 }
 
 - (UIView *)mapView:(GMSMapView *)mapView markerInfoWindow:(GMSMarker *)marker {

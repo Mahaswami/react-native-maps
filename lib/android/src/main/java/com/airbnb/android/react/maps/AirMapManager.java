@@ -129,6 +129,11 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
         view.map.getUiSettings().setIndoorLevelPickerEnabled(showsIndoorLevelPicker);
     }
 
+    @ReactProp(name = "show3Dview", defaultBoolean = true)
+    public void setMy3Dview(AirMapView view, boolean show3Dview) {
+      view.setMy3Dview(show3Dview);
+    }
+
     @ReactProp(name = "showsCompass", defaultBoolean = false)
     public void setShowsCompass(AirMapView view, boolean showsCompass) {
         view.map.getUiSettings().setCompassEnabled(showsCompass);

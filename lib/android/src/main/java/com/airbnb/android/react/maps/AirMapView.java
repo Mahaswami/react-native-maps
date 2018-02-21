@@ -71,6 +71,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     private boolean handlePanDrag = false;
     private boolean moveOnMarkerPress = true;
     private boolean cacheEnabled = false;
+    private boolean initialRegionSet = false;
 
     private static final String[] PERMISSIONS = new String[] {
             "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"};
@@ -377,6 +378,19 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
             boundsToMove = null;
         }
+
+        if( initialRegionSet == false) {
+           LatLng latAndLng = new LatLng(lat, lng);
+            CameraPosition.Builder camBuilder = CameraPosition.builder();
+            camBuilder.tilt(80);
+            camBuilder.target(latAndLng);
+            camBuilder.zoom(18);
+
+            CameraPosition cp = camBuilder.build();
+
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+            initialRegionSet = true;
+        }
     }
 
     public void setShowsUserLocation(boolean showUserLocation) {
@@ -458,6 +472,22 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     public void setHandlePanDrag(boolean handlePanDrag) {
         this.handlePanDrag = handlePanDrag;
     }
+
+     public void setMy3Dview(boolean show3Dview) {
+          CameraPosition cameraPosition;
+          if(show3Dview){
+             cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+               .tilt(80)
+               .build();
+          }
+          else {
+             cameraPosition = new CameraPosition.Builder(map.getCameraPosition())
+               .tilt(0)
+               .build();
+          }
+           map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+     }
+
 
     public void addFeature(View child, int index) {
         // Our desired API is to pass up annotations/overlays as children to the mapview component.
