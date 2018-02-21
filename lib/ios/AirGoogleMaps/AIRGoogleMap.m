@@ -35,6 +35,8 @@ id regionAsJSON(MKCoordinateRegion region) {
 {
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _initialRegionSet;
+  BOOL _threeDView;
+  BOOL _initialRegionSet;
 }
 
 - (instancetype)init
@@ -47,6 +49,7 @@ id regionAsJSON(MKCoordinateRegion region) {
     _circles = [NSMutableArray array];
     _tiles = [NSMutableArray array];
     _initialRegionSet = false;
+    _threeDView = true;
   }
   return self;
 }
@@ -145,9 +148,12 @@ id regionAsJSON(MKCoordinateRegion region) {
 #pragma clang diagnostic pop
 
 - (void)setInitialRegion:(MKCoordinateRegion)initialRegion {
-  if (_initialRegionSet) return;
-  _initialRegionSet = true;
-  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
+  if (_initialRegionSet && _threeDView){
+    return;
+  } else {
+    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
+    _initialRegionSet = true;
+  }
 }
 
 - (void)setRegion:(MKCoordinateRegion)region {
@@ -302,9 +308,11 @@ id regionAsJSON(MKCoordinateRegion region) {
 
 - (void)setShow3Dview:(BOOL)show3Dview {
   if((int)show3Dview){
+     _threeDView = true;
     [self animateToViewingAngle:80.0];
   }
   else{
+    _threeDView = true;
     [self animateToViewingAngle:0.0];
   }
 }
