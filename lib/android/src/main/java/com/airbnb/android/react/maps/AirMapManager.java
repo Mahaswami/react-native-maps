@@ -149,6 +149,11 @@ public class AirMapManager extends ViewGroupManager<AirMapView> {
         view.map.getUiSettings().setZoomGesturesEnabled(zoomEnabled);
     }
 
+    @ReactProp(name = "moveToCurrentLoc", defaultBoolean = true)
+    public void setMyMoveToCurrentLoc(AirMapView view, boolean moveToCurrentLoc) {
+      view.setMyMoveToCurrentLoc(moveToCurrentLoc);
+    }
+
     @ReactProp(name = "rotateEnabled", defaultBoolean = false)
     public void setRotateEnabled(AirMapView view, boolean rotateEnabled) {
         view.map.getUiSettings().setRotateGesturesEnabled(rotateEnabled);

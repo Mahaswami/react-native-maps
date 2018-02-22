@@ -73,6 +73,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     private boolean cacheEnabled = false;
     private boolean initialRegionSet = false;
     public boolean threeDView = true;
+    public boolean moveToCurrent = false;
 
     private static final String[] PERMISSIONS = new String[] {
             "android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"};
@@ -358,7 +359,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     }
 
     public void setRegion(ReadableMap region) {
-        if (region == null || (threeDView && initialRegionSet)) return;
+        if (region == null) return;
 
         Double lng = region.getDouble("longitude");
         Double lat = region.getDouble("latitude");
@@ -368,19 +369,31 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
                 new LatLng(lat - latDelta / 2, lng - lngDelta / 2), // southwest
                 new LatLng(lat + latDelta / 2, lng + lngDelta / 2)  // northeast
         );
-        if (super.getHeight() <= 0 || super.getWidth() <= 0) {
-            // in this case, our map has not been laid out yet, so we save the bounds in a local
-            // variable, and make a guess of zoomLevel 10. Not to worry, though: as soon as layout
-            // occurs, we will move the camera to the saved bounds. Note that if we tried to move
-            // to the bounds now, it would trigger an exception.
-            System.out.println("set regionnn");
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
-            boundsToMove = bounds;
-        } else {
-            System.out.println("set regionnn elseeeeeeeeeeeeeeeeeee");
-            map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
-            boundsToMove = null;
+
+        if(moveToCurrent){
+           moveToCurrent = false;
+           if (super.getHeight() <= 0 || super.getWidth() <= 0) {
+               System.out.println("set regionnn");
+               map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
+               boundsToMove = bounds;
+           } else {
+               map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+               boundsToMove = null;
+           }
+
+           if(threeDView){
+             LatLng latAndLng = new LatLng(lat, lng);
+             CameraPosition.Builder camBuilder = CameraPosition.builder();
+             camBuilder.tilt(80);
+             camBuilder.target(latAndLng);
+             camBuilder.zoom(18);
+
+             CameraPosition cp = camBuilder.build();
+
+             map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+           }
         }
+
 
         if(initialRegionSet == false){
            initialRegionSet = true;
@@ -389,9 +402,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
            camBuilder.tilt(80);
            camBuilder.target(latAndLng);
            camBuilder.zoom(18);
-
            CameraPosition cp = camBuilder.build();
-
            map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
         }
     }
@@ -489,8 +500,11 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
                .tilt(0)
                .build();
           }
-          System.out.println("3d viewwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww");
            map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+     }
+
+     public void setMyMoveToCurrentLoc(boolean moveToCurrentLoc) {
+        moveToCurrent = moveToCurrentLoc;
      }
 
 

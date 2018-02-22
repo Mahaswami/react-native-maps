@@ -37,6 +37,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   BOOL _initialRegionSet;
   BOOL _threeDView;
   BOOL _initialRegionSet;
+  BOOL _moveToCurrent;
 }
 
 - (instancetype)init
@@ -50,6 +51,7 @@ id regionAsJSON(MKCoordinateRegion region) {
     _tiles = [NSMutableArray array];
     _initialRegionSet = false;
     _threeDView = true;
+    _moveToCurrent = false;
   }
   return self;
 }
@@ -158,7 +160,20 @@ id regionAsJSON(MKCoordinateRegion region) {
 
 - (void)setRegion:(MKCoordinateRegion)region {
   // TODO: The JS component is repeatedly setting region unnecessarily. We might want to deal with that in here.
-  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
+
+  if(_initialRegionSet == false){
+      _initialRegionSet = false;
+      self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
+      [self animateToViewingAngle:80.0];
+  }
+
+  if(_moveToCurrent){
+    _moveToCurrent = false;
+    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
+      if(_threeDView){
+          [self animateToViewingAngle:80.0];
+      }
+  }
 }
 
 - (BOOL)didTapMarker:(GMSMarker *)marker {
@@ -315,6 +330,10 @@ id regionAsJSON(MKCoordinateRegion region) {
     _threeDView = true;
     [self animateToViewingAngle:0.0];
   }
+}
+
+- (void)setMoveToCurrentLoc:(BOOL)moveToCurrentLoc {
+   _moveToCurrent = moveToCurrentLoc;
 }
 
 
