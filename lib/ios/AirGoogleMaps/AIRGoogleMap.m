@@ -31,6 +31,7 @@ id regionAsJSON(MKCoordinateRegion region) {
 
 @end
 
+
 @implementation AIRGoogleMap
 {
   NSMutableArray<UIView *> *_reactSubviews;
