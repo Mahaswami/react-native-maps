@@ -371,7 +371,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
         );
 
         if(moveToCurrent){
-           moveToCurrent = false;
+           //moveToCurrent = false;
            if (super.getHeight() <= 0 || super.getWidth() <= 0) {
                System.out.println("set regionnn");
                map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
@@ -381,7 +381,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
                boundsToMove = null;
            }
 
-           if(threeDView){
+           if(threeDView && initialRegionSet){
              LatLng latAndLng = new LatLng(lat, lng);
              CameraPosition.Builder camBuilder = CameraPosition.builder();
              camBuilder.tilt(80);
