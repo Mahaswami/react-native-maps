@@ -51,9 +51,20 @@ id regionAsJSON(MKCoordinateRegion region) {
     _initialRegionSet = false;
     _threeDView = true;
     _moveToCurrent = false;
+
+    self.userInteractionEnabled = YES;
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    self.gestureRecognizers = @[panRecognizer];
+
   }
   return self;
 }
+
+- (void)handlePan:(UIPanGestureRecognizer *)uigr {
+  NSLog(@"move to cureeeeeeeeee");
+  _moveToCurrent = false;
+}
+
 - (id)eventFromCoordinate:(CLLocationCoordinate2D)coordinate {
 
   CGPoint touchPoint = [self.projection pointForCoordinate:coordinate];
@@ -149,26 +160,23 @@ id regionAsJSON(MKCoordinateRegion region) {
 #pragma clang diagnostic pop
 
 - (void)setInitialRegion:(MKCoordinateRegion)initialRegion {
-  if (_initialRegionSet && _threeDView){
-    return;
-  } else {
     self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
-    _initialRegionSet = true;
-  }
 }
 
 - (void)setRegion:(MKCoordinateRegion)region {
   // TODO: The JS component is repeatedly setting region unnecessarily. We might want to deal with that in here.
 
-  if(_initialRegionSet == false){
-      _initialRegionSet = false;
+   if(_initialRegionSet == false){
+      _initialRegionSet = true;
       self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
       [self animateToViewingAngle:80.0];
   }
 
-  if(_moveToCurrent){
-    _moveToCurrent = false;
-    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
+  NSLog(@"aaaaaaaaaaaaaaaaaaaaaaaa");
+  NSLog(@"%d", (int)_moveToCurrent);
+  if(_moveToCurrent && _initialRegionSet){
+    //_moveToCurrent = false;
+     self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
       if(_threeDView){
           [self animateToViewingAngle:80.0];
       }
@@ -316,6 +324,11 @@ id regionAsJSON(MKCoordinateRegion region) {
   self.settings.myLocationButton = showsMyLocationButton;
 }
 
+- (void)setShowsMyLocationButton1:(BOOL)showsMyLocationButton1 {
+    NSLog(@"movtocurrrrrrrrrrrrrrrrrrrrrrrrrrrrrr11111");
+   _moveToCurrent = true;
+}
+
 - (BOOL)showsMyLocationButton {
   return self.settings.myLocationButton;
 }
@@ -326,13 +339,14 @@ id regionAsJSON(MKCoordinateRegion region) {
     [self animateToViewingAngle:80.0];
   }
   else{
-    _threeDView = true;
+    _threeDView = false;
     [self animateToViewingAngle:0.0];
   }
 }
 
-- (void)setMoveToCurrentLoc:(BOOL)moveToCurrentLoc {
-   _moveToCurrent = moveToCurrentLoc;
+- (void)setCurrent:(BOOL)current {
+  NSLog(@"movtocurrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+   _moveToCurrent = current;
 }
 
 
