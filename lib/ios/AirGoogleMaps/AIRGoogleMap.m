@@ -36,7 +36,6 @@ id regionAsJSON(MKCoordinateRegion region) {
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _initialRegionSet;
   BOOL _threeDView;
-  BOOL _initialRegionSet;
   BOOL _moveToCurrent;
 }
 
