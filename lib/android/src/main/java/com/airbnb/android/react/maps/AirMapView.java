@@ -372,13 +372,6 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
 
         if(moveToCurrent){
           // moveToCurrent = false;
-           if (super.getHeight() <= 0 || super.getWidth() <= 0) {
-               map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
-               boundsToMove = bounds;
-           } else {
-               map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
-               boundsToMove = null;
-           }
 
            if(threeDView){
              LatLng latAndLng = new LatLng(lat, lng);
@@ -390,6 +383,14 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
              CameraPosition cp = camBuilder.build();
 
              map.moveCamera(CameraUpdateFactory.newCameraPosition(cp));
+           } else {
+              if (super.getHeight() <= 0 || super.getWidth() <= 0) {
+                  map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 10));
+                  boundsToMove = bounds;
+              } else {
+                  map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 0));
+                  boundsToMove = null;
+              }
            }
         }
 
