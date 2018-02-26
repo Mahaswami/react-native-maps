@@ -37,7 +37,6 @@ id regionAsJSON(MKCoordinateRegion region) {
   NSMutableArray<UIView *> *_reactSubviews;
   BOOL _initialRegionSet;
   BOOL _threeDView;
-  BOOL _initialRegionSet;
   BOOL _moveToCurrent;
 }
 
@@ -53,9 +52,18 @@ id regionAsJSON(MKCoordinateRegion region) {
     _initialRegionSet = false;
     _threeDView = true;
     _moveToCurrent = false;
+
+    self.userInteractionEnabled = YES;
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    self.gestureRecognizers = @[panRecognizer];
   }
   return self;
 }
+
+- (void)handlePan:(UIPanGestureRecognizer *)uigr {
+  _moveToCurrent = false;
+}
+
 - (id)eventFromCoordinate:(CLLocationCoordinate2D)coordinate {
 
   CGPoint touchPoint = [self.projection pointForCoordinate:coordinate];
@@ -151,29 +159,20 @@ id regionAsJSON(MKCoordinateRegion region) {
 #pragma clang diagnostic pop
 
 - (void)setInitialRegion:(MKCoordinateRegion)initialRegion {
-  if (_initialRegionSet && _threeDView){
-    return;
-  } else {
-    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
-    _initialRegionSet = true;
-  }
+    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion andThreeDValue:_threeDView];
 }
 
 - (void)setRegion:(MKCoordinateRegion)region {
   // TODO: The JS component is repeatedly setting region unnecessarily. We might want to deal with that in here.
 
   if(_initialRegionSet == false){
-      _initialRegionSet = false;
-      self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
-      [self animateToViewingAngle:80.0];
+      _initialRegionSet = true;
+      _threeDView = true;
+    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andThreeDValue:_threeDView];
   }
 
   if(_moveToCurrent){
-    _moveToCurrent = false;
-    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
-      if(_threeDView){
-          [self animateToViewingAngle:80.0];
-      }
+        self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andThreeDValue:_threeDView];
   }
 }
 
@@ -324,17 +323,17 @@ id regionAsJSON(MKCoordinateRegion region) {
 
 - (void)setShow3Dview:(BOOL)show3Dview {
   if((int)show3Dview){
-     _threeDView = true;
-    [self animateToViewingAngle:80.0];
+    _threeDView = true;
+    [self animateToViewingAngle:65.0];
   }
   else{
-    _threeDView = true;
+    _threeDView = false;
     [self animateToViewingAngle:0.0];
   }
 }
 
-- (void)setMoveToCurrentLoc:(BOOL)moveToCurrentLoc {
-   _moveToCurrent = moveToCurrentLoc;
+- (void)setChangeMapRegion:(BOOL)changeMapRegion {
+   _moveToCurrent = changeMapRegion;
 }
 
 
@@ -361,7 +360,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   return MKCoordinateRegionMake(center, span);
 }
 
-+ (GMSCameraPosition*) makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region {
++ (GMSCameraPosition*) makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region andThreeDValue:(BOOL)_threeDView {
   float latitudeDelta = region.span.latitudeDelta * 0.5;
   float longitudeDelta = region.span.longitudeDelta * 0.5;
 
@@ -370,7 +369,19 @@ id regionAsJSON(MKCoordinateRegion region) {
   CLLocationCoordinate2D b = CLLocationCoordinate2DMake(region.center.latitude - latitudeDelta,
                                                         region.center.longitude - longitudeDelta);
   GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:a coordinate:b];
+
+  GMSCameraPosition *camera = [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
+
+  if((int)_threeDView) {
+    return [GMSCameraPosition cameraWithLatitude:region.center.latitude
+                                     longitude:region.center.longitude
+                                     zoom:18
+                                     bearing:camera.bearing
+                                     viewingAngle:65];
+  } else {
   return [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
+
+  }
 }
 
 @end

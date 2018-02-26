@@ -40,8 +40,7 @@
 @property (nonatomic, assign) BOOL showsUserLocation;
 @property (nonatomic, assign) BOOL showsMyLocationButton;
 @property (nonatomic, assign) BOOL show3Dview;
-@property (nonatomic, assign) BOOL moveToCurrentLoc;
-
+@property (nonatomic, assign) BOOL changeMapRegion;
 - (BOOL)didTapMarker:(GMSMarker *)marker;
 - (void)didTapPolyline:(GMSPolyline *)polyline;
 - (void)didTapPolygon:(GMSPolygon *)polygon;
