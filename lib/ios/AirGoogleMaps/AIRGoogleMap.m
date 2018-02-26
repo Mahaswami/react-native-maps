@@ -375,7 +375,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   if((int)_threeDView) {
     return [GMSCameraPosition cameraWithLatitude:region.center.latitude
                                      longitude:region.center.longitude
-                                     zoom:18
+                                     zoom:19
                                      bearing:camera.bearing
                                      viewingAngle:65];
   } else {
