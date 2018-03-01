@@ -317,7 +317,9 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
             map.setMyLocationEnabled(false);
           }
             synchronized (AirMapView.this) {
-                AirMapView.this.onPause();
+                if(!destroyed){
+                  AirMapView.this.onPause();
+                }
                 paused = true;
             }
         }
@@ -359,7 +361,7 @@ public class AirMapView extends MapView implements GoogleMap.InfoWindowAdapter,
     }
 
     public void setRegion(ReadableMap region) {
-        if (region == null) return;
+        if (region == null && !this.isMapLoaded) return;
 
         Double lng = region.getDouble("longitude");
         Double lat = region.getDouble("latitude");
