@@ -19,12 +19,12 @@ public class MapsPackage implements ReactPackage {
     public MapsPackage() {
     }
 
-    @Override
+    //@Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(new AirMapModule(reactContext));
     }
 
-    @Override
+    //@Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
         return Collections.emptyList();
     }
