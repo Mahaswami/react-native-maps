@@ -57,6 +57,8 @@
 @property (nonatomic, assign) BOOL showsIndoors;
 @property (nonatomic, assign) BOOL showsIndoorLevelPicker;
 @property (nonatomic, assign) NSString *kmlSrc;
+@property (nonatomic, assign) BOOL show3Dview;
+@property (nonatomic, assign) BOOL changeMapRegion;
 
 - (void)didPrepareMap;
 - (BOOL)didTapMarker:(GMSMarker *)marker;
@@ -70,7 +72,7 @@
 - (NSArray *)getMapBoundaries;
 
 + (MKCoordinateRegion)makeGMSCameraPositionFromMap:(GMSMapView *)map andGMSCameraPosition:(GMSCameraPosition *)position;
-+ (GMSCameraPosition*)makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region;
++ (GMSCameraPosition*)makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region andThreeDValue:_threeDView;
 
 @end
 

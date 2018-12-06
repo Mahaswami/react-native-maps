@@ -47,6 +47,7 @@ RCT_EXPORT_MODULE()
 {
   AIRGoogleMap *map = [AIRGoogleMap new];
   map.bridge = self.bridge;
+  self.show3Dview = YES;
   map.delegate = self;
   map.indoorDisplay.delegate = self;
   self.map = map;
@@ -88,6 +89,8 @@ RCT_EXPORT_VIEW_PROPERTY(mapType, GMSMapViewType)
 RCT_EXPORT_VIEW_PROPERTY(minZoomLevel, CGFloat)
 RCT_EXPORT_VIEW_PROPERTY(maxZoomLevel, CGFloat)
 RCT_EXPORT_VIEW_PROPERTY(kmlSrc, NSString)
+RCT_EXPORT_VIEW_PROPERTY(show3Dview, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(changeMapRegion, BOOL)
 
 RCT_EXPORT_METHOD(getCamera:(nonnull NSNumber *)reactTag
                   resolver: (RCTPromiseResolveBlock)resolve
@@ -161,7 +164,7 @@ RCT_EXPORT_METHOD(animateToNavigation:(nonnull NSNumber *)reactTag
       [CATransaction begin];
       [CATransaction setAnimationDuration:duration/1000];
       AIRGoogleMap *mapView = (AIRGoogleMap *)view;
-      GMSCameraPosition *camera = [AIRGoogleMap makeGMSCameraPositionFromMap:mapView andMKCoordinateRegion:region];
+      GMSCameraPosition *camera = [AIRGoogleMap makeGMSCameraPositionFromMap:mapView andMKCoordinateRegion:region andThreeDValue:false];
       [mapView animateToCameraPosition:camera];
       [mapView animateToViewingAngle:angle];
       [mapView animateToBearing:bearing];
@@ -184,7 +187,7 @@ RCT_EXPORT_METHOD(animateToRegion:(nonnull NSNumber *)reactTag
       [CATransaction begin];
       [CATransaction setAnimationDuration:duration/1000];
       AIRGoogleMap *mapView = (AIRGoogleMap *)view;
-      GMSCameraPosition *camera = [AIRGoogleMap makeGMSCameraPositionFromMap:mapView andMKCoordinateRegion:region];
+      GMSCameraPosition *camera = [AIRGoogleMap makeGMSCameraPositionFromMap:mapView andMKCoordinateRegion:region andThreeDValue:false];
       [mapView animateToCameraPosition:camera];
       [CATransaction commit];
     }
@@ -554,6 +557,10 @@ RCT_EXPORT_METHOD(setIndoorActiveLevelIndex:(nonnull NSNumber *)reactTag
 - (void)mapView:(GMSMapView *)mapView idleAtCameraPosition:(GMSCameraPosition *)position {
   AIRGoogleMap *googleMapView = (AIRGoogleMap *)mapView;
   [googleMapView idleAtCameraPosition:position];
+    if(self.show3Dview){
+      self.show3Dview = NO;
+      [googleMapView animateToViewingAngle: 80.0];
+    }
 }
 
 - (UIView *)mapView:(GMSMapView *)mapView markerInfoWindow:(GMSMarker *)marker {

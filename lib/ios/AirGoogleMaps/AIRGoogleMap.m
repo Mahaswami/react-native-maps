@@ -60,6 +60,9 @@ id regionAsJSON(MKCoordinateRegion region) {
   BOOL _initialCameraSetOnLoad;
   BOOL _didCallOnMapReady;
   BOOL _didMoveToWindow;
+  BOOL _initialRegionSet;
+  BOOL _threeDView;
+  BOOL _moveToCurrent;
 }
 
 - (instancetype)init
@@ -79,14 +82,25 @@ id regionAsJSON(MKCoordinateRegion region) {
     _initialCameraSetOnLoad = false;
     _didCallOnMapReady = false;
     _didMoveToWindow = false;
+    _initialRegionSet = false;
+    _threeDView = true;
+    _moveToCurrent = false;
 
     // Listen to the myLocation property of GMSMapView.
     [self addObserver:self
            forKeyPath:@"myLocation"
               options:NSKeyValueObservingOptionNew
               context:NULL];
+
+      self.userInteractionEnabled = YES;
+          UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+          self.gestureRecognizers = @[panRecognizer];
   }
   return self;
+}
+
+- (void)handlePan:(UIPanGestureRecognizer *)uigr {
+  _moveToCurrent = false;
 }
 
 - (void)dealloc {
@@ -239,7 +253,8 @@ id regionAsJSON(MKCoordinateRegion region) {
   if (_initialCameraSetOnLoad) return;
   _initialRegion = initialRegion;
   _initialCameraSetOnLoad = _didMoveToWindow;
-  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
+  //self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
+  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion andThreeDValue:_threeDView];
 }
 
 - (void)setInitialCamera:(GMSCameraPosition*)initialCamera {
@@ -252,7 +267,16 @@ id regionAsJSON(MKCoordinateRegion region) {
 - (void)setRegion:(MKCoordinateRegion)region {
   // TODO: The JS component is repeatedly setting region unnecessarily. We might want to deal with that in here.
   _region = region;
-  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
+  //self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region];
+  if(_initialRegionSet == false){
+        _initialRegionSet = true;
+        _threeDView = true;
+      self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andThreeDValue:_threeDView];
+    }
+
+    if(_moveToCurrent){
+          self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andThreeDValue:_threeDView];
+    }
 }
 
 - (void)setCameraProp:(GMSCameraPosition*)camera {
@@ -493,6 +517,21 @@ id regionAsJSON(MKCoordinateRegion region) {
   return self.settings.indoorPicker;
 }
 
+- (void)setShow3Dview:(BOOL)show3Dview {
+  if((int)show3Dview){
+    _threeDView = true;
+    [self animateToViewingAngle:65.0];
+  }
+  else{
+    _threeDView = false;
+    [self animateToViewingAngle:0.0];
+  }
+}
+
+- (void)setChangeMapRegion:(BOOL)changeMapRegion {
+   _moveToCurrent = changeMapRegion;
+}
+
 + (MKCoordinateRegion) makeGMSCameraPositionFromMap:(GMSMapView *)map andGMSCameraPosition:(GMSCameraPosition *)position {
   // solution from here: http://stackoverflow.com/a/16587735/1102215
   GMSVisibleRegion visibleRegion = map.projection.visibleRegion;
@@ -516,7 +555,8 @@ id regionAsJSON(MKCoordinateRegion region) {
   return MKCoordinateRegionMake(center, span);
 }
 
-+ (GMSCameraPosition*) makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region {
++ (GMSCameraPosition*) makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region
+    andThreeDValue:(BOOL)_threeDView {
   float latitudeDelta = region.span.latitudeDelta * 0.5;
   float longitudeDelta = region.span.longitudeDelta * 0.5;
 
@@ -525,7 +565,19 @@ id regionAsJSON(MKCoordinateRegion region) {
   CLLocationCoordinate2D b = CLLocationCoordinate2DMake(region.center.latitude - latitudeDelta,
                                                         region.center.longitude - longitudeDelta);
   GMSCoordinateBounds *bounds = [[GMSCoordinateBounds alloc] initWithCoordinate:a coordinate:b];
-  return [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
+  //return [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
+  GMSCameraPosition *camera = [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
+
+    if((int)_threeDView) {
+      return [GMSCameraPosition cameraWithLatitude:region.center.latitude
+                                       longitude:region.center.longitude
+                                       zoom:camera.zoom
+                                       bearing:camera.bearing
+                                       viewingAngle:80];
+    } else {
+    return [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
+
+    }
 }
 
 #pragma mark - KVO updates
