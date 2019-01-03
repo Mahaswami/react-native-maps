@@ -59,6 +59,7 @@
 @property (nonatomic, assign) NSString *kmlSrc;
 @property (nonatomic, assign) BOOL show3Dview;
 @property (nonatomic, assign) BOOL changeMapRegion;
+@property (nonatomic, assign) BOOL threeDViewFlag;
 
 - (void)didPrepareMap;
 - (BOOL)didTapMarker:(GMSMarker *)marker;
