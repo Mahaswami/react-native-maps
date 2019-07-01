@@ -63,7 +63,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   BOOL _initialRegionSet;
   BOOL _threeDView;
   BOOL _moveToCurrent;
-  BOOL _threeDViewFlag;
+    BOOL _threeDviewFlag;
 }
 
 - (instancetype)init
@@ -85,7 +85,7 @@ id regionAsJSON(MKCoordinateRegion region) {
     _didMoveToWindow = false;
     _initialRegionSet = false;
     _threeDView = true;
-    _threeDViewFlag = true;
+      _threeDviewFlag = true;
     _moveToCurrent = false;
 
     // Listen to the myLocation property of GMSMapView.
@@ -242,10 +242,10 @@ id regionAsJSON(MKCoordinateRegion region) {
   }
   else if (_initialRegion.span.latitudeDelta != 0.0 &&
       _initialRegion.span.longitudeDelta != 0.0) {
-    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:_initialRegion andThreeDValue:_threeDViewFlag];
+      self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:_initialRegion andthreeDviewFlag:_threeDviewFlag];
   } else if (_region.span.latitudeDelta != 0.0 &&
       _region.span.longitudeDelta != 0.0) {
-    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:_region andThreeDValue:_threeDViewFlag];
+    self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:_region andthreeDviewFlag:_threeDviewFlag];
   }
 
   [super didMoveToWindow];
@@ -256,7 +256,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   _initialRegion = initialRegion;
   _initialCameraSetOnLoad = _didMoveToWindow;
   //self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion];
-  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion andThreeDValue:_threeDViewFlag];
+  self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self andMKCoordinateRegion:initialRegion   andthreeDviewFlag:_threeDviewFlag];
 }
 
 - (void)setInitialCamera:(GMSCameraPosition*)initialCamera {
@@ -273,12 +273,12 @@ id regionAsJSON(MKCoordinateRegion region) {
   if(_initialRegionSet == false){
         _initialRegionSet = true;
         _threeDView = true;
-        _threeDViewFlag = true;
-      self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andThreeDValue:_threeDViewFlag];
+      _threeDviewFlag = true;
+      self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andthreeDviewFlag:_threeDviewFlag];
     }
 
     if(_moveToCurrent){
-          self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andThreeDValue:_threeDViewFlag];
+          self.camera = [AIRGoogleMap makeGMSCameraPositionFromMap:self  andMKCoordinateRegion:region andthreeDviewFlag:_threeDviewFlag];
     }
 }
 
@@ -523,12 +523,12 @@ id regionAsJSON(MKCoordinateRegion region) {
 - (void)setShow3Dview:(BOOL)show3Dview {
   if((int)show3Dview){
     _threeDView = true;
-    _threeDViewFlag = true;
+      _threeDviewFlag = true;
     [self animateToViewingAngle:65.0];
   }
   else{
     _threeDView = false;
-    _threeDViewFlag = false;
+      _threeDviewFlag = false;
     [self animateToViewingAngle:0.0];
   }
 }
@@ -560,8 +560,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   return MKCoordinateRegionMake(center, span);
 }
 
-+ (GMSCameraPosition*) makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region
-    andThreeDValue:(BOOL)_threeDViewFlag {
++ (GMSCameraPosition*) makeGMSCameraPositionFromMap:(GMSMapView *)map andMKCoordinateRegion:(MKCoordinateRegion)region andthreeDviewFlag:(BOOL)_threeDviewFlag {
   float latitudeDelta = region.span.latitudeDelta * 0.5;
   float longitudeDelta = region.span.longitudeDelta * 0.5;
 
@@ -573,7 +572,7 @@ id regionAsJSON(MKCoordinateRegion region) {
   //return [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
   GMSCameraPosition *camera = [map cameraForBounds:bounds insets:UIEdgeInsetsZero];
 
-    if((int)_threeDViewFlag) {
+    if((int)_threeDviewFlag) {
       return [GMSCameraPosition cameraWithLatitude:region.center.latitude
                                        longitude:region.center.longitude
                                        zoom:camera.zoom
